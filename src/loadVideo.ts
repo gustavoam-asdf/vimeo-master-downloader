@@ -3,6 +3,7 @@ import { DownloadVideo } from "./DownloadVideo";
 import { MasterVideo } from "./MasterVideo";
 import { MediaResolved } from "./MediaResolved";
 import { fetchWithRetry } from "./fetchWithRetry";
+import { processMedia } from "./processMedia";
 
 export async function loadVideo(video: DownloadVideo) {
 	const masterUrl = new URL(video.url).toString()
@@ -36,4 +37,22 @@ export async function loadVideo(video: DownloadVideo) {
 			}))
 		}))
 		: undefined
+
+	for (const videoPart of videoParts) {
+		await processMedia({
+			type: "video",
+			video,
+			media: videoPart
+		})
+	}
+
+	if (audioParts) {
+		for (const audioPart of audioParts) {
+			await processMedia({
+				type: "audio",
+				video,
+				media: audioPart
+			})
+		}
+	}
 }

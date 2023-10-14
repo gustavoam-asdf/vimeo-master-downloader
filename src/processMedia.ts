@@ -1,7 +1,8 @@
-import { createWriteStream } from "node:fs"
-import fs from "node:fs/promises"
 import { DownloadVideo } from "./DownloadVideo"
 import { MediaResolved } from "./MediaResolved"
+import { createWriteStream } from "node:fs"
+import { downloadSegments } from "./downloadSegments"
+import fs from "node:fs/promises"
 import { partsDir } from "./constants"
 
 type Params = {
@@ -38,5 +39,12 @@ export async function processMedia({ type, video, media }: Params) {
 
 	const fileOutputStream = createWriteStream(filePath, {
 		flags: "a",
+	})
+
+	await downloadSegments({
+		type,
+		videoName: video.name,
+		segments: media.segments,
+		fileOutputStream,
 	})
 }
