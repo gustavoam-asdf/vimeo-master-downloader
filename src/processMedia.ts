@@ -1,9 +1,9 @@
+import { createWriteStream } from "node:fs"
+import fs from "node:fs/promises"
 import { DownloadVideo } from "./DownloadVideo"
 import { MediaResolved } from "./MediaResolved"
-import { createWriteStream } from "node:fs"
-import { downloadSegments } from "./downloadSegments"
-import fs from "node:fs/promises"
 import { partsDir } from "./constants"
+import { downloadSegments } from "./downloadSegments"
 
 type Params = {
 	type: "audio" | "video"
@@ -47,4 +47,10 @@ export async function processMedia({ type, video, media }: Params) {
 		segments: media.segments,
 		fileOutputStream,
 	})
+
+	if (await fs.exists(downloadingFlag)) {
+		await fs.rm(downloadingFlag)
+	}
+
+	console.log(`→ 🏁 ${video.name} - ${type} done`)
 }

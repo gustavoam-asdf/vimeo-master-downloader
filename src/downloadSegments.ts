@@ -1,7 +1,6 @@
-import { createSegmentsChunks } from "./SegmentsChunk"
-
 import { WriteStream } from "node:fs"
 import { SegmentResolved } from "./SegmentResolved"
+import { createSegmentsChunks } from "./SegmentsChunk"
 import { downloadSegmentsChunk } from "./downloadSegmentsChunk"
 
 type Params = {
