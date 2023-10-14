@@ -7,15 +7,15 @@ import { getVideoFilesTarget } from "./getVideoFilesTarget"
 
 type Params = {
 	type: "audio" | "video"
-	video: DownloadVideo
-	media: MediaResolved
+	downloadVideo: DownloadVideo
+	mediaResolved: MediaResolved
 }
 
-export async function processMedia({ type, video, media }: Params) {
-	const files = getVideoFilesTarget({ video })
+export async function processMedia({ type, downloadVideo, mediaResolved }: Params) {
+	const files = getVideoFilesTarget({ downloadVideo: downloadVideo })
 	const { filePath } = files[type]
 
-	const initBuffer = Buffer.from(media.init_segment, "base64")
+	const initBuffer = Buffer.from(mediaResolved.init_segment, "base64")
 	await fs.writeFile(filePath, initBuffer)
 
 	const fileOutputStream = createWriteStream(filePath, {
@@ -24,10 +24,10 @@ export async function processMedia({ type, video, media }: Params) {
 
 	await downloadSegments({
 		type,
-		videoName: video.name,
-		segments: media.segments,
+		videoName: downloadVideo.name,
+		segments: mediaResolved.segments,
 		fileOutputStream,
 	})
 
-	console.log(`→ 🏁 ${video.name} - ${type} done`)
+	console.log(`→ 🏁 ${downloadVideo.name} - ${type} done`)
 }

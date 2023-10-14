@@ -5,15 +5,15 @@ import { getVideoFilesTarget } from "./getVideoFilesTarget";
 import { processMedia } from "./processMedia";
 
 type Params = {
-	video: DownloadVideo
-	parts: MediaResolved[]
+	downloadVideo: DownloadVideo
+	videoResolved: MediaResolved
 }
 
 export async function processVideoMedia({
-	video: downloadVideo,
-	parts
+	downloadVideo,
+	videoResolved
 }: Params) {
-	const { video } = getVideoFilesTarget({ video: downloadVideo })
+	const { video } = getVideoFilesTarget({ downloadVideo })
 
 	const existDownloadingFlag = await fs.exists(video.downloadingFlag)
 
@@ -29,13 +29,11 @@ export async function processVideoMedia({
 
 	await fs.writeFile(video.downloadingFlag, "")
 
-	for (const part of parts) {
-		await processMedia({
-			type: "video",
-			video: downloadVideo,
-			media: part
-		})
-	}
+	await processMedia({
+		type: "video",
+		downloadVideo,
+		mediaResolved: videoResolved
+	})
 
 	await fs.rm(video.downloadingFlag)
 }
