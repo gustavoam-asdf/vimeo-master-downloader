@@ -1,35 +1,8 @@
-interface Media {
-	id: string;
-	avg_id: string;
-	base_url: string;
-	format: string;
-	mime_type: string;
-	codecs: string;
-	bitrate: number;
-	avg_bitrate: number;
-	duration: number;
-	channels?: number;
-	sample_rate?: number;
-	max_segment_duration: number;
-	init_segment: string;
-	index_segment: string;
-	segments: Segment[];
-	audio_primary?: boolean;
-	framerate?: number;
-	width?: number;
-	height?: number;
-}
-
-interface Segment {
-	start: number;
-	end: number;
-	url: string;
-	size: number;
-}
+import { Media } from "./Media"
 
 export interface MasterVideo {
-	clip_id: string;
-	base_url: string;
-	video: Media[];
-	audio?: Media[];
+	clip_id: string
+	base_url: string
+	video: Media[]
+	audio?: Media[]
 }
