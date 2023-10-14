@@ -30,12 +30,14 @@ export async function downloadSegmentsChunk({
 					retries: 10,
 				})
 
-				return response.blob()
+				const data = await response.text()
+
+				return Buffer.from(data)
 			}
 		)
 	)
 
-	const blob = new Blob(response)
+	const buffer = Buffer.concat(response)
 
-	fileOutputStream.write(blob)
+	fileOutputStream.write(buffer)
 }

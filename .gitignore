@@ -1,6 +1,9 @@
 videos.json
 master.mock.json
 
+parts/*
+converted/*
+
 # Logs
 logs
 *.log
