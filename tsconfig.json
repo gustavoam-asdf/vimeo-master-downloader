@@ -20,5 +20,9 @@
 		"types": [
 			"bun-types"
 		]
-	}
+	},
+	"include": [
+		"src/**/*",
+		"videos.json"
+	],
 }
