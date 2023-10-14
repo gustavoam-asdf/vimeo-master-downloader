@@ -1,9 +1,9 @@
+import { DownloadVideo } from "./DownloadVideo";
 import { MasterVideo } from "./MasterVideo";
 import { MediaResolved } from "./MediaResolved";
-import { Video } from "./Video";
 import { fetchWithRetry } from "./fetchWithRetry";
 
-export async function loadVideo(video: Video) {
+export async function loadVideo(video: DownloadVideo) {
 	const masterUrl = new URL(video.url).toString()
 
 	const response = await fetchWithRetry({ url: masterUrl })
@@ -26,4 +26,10 @@ export async function loadVideo(video: Video) {
 		}))
 		: undefined
 
+	const videoPart = videoParts[0]
+
+	console.log({
+		...videoPart,
+		segments: videoPart.segments.length
+	})
 }
