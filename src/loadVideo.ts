@@ -1,9 +1,9 @@
-import url from "node:url";
-import { DownloadVideo } from "./DownloadVideo";
-import { MasterVideo } from "./MasterVideo";
-import { MediaResolved } from "./MediaResolved";
-import { fetchWithRetry } from "./fetchWithRetry";
-import { processMedia } from "./processMedia";
+import url from "node:url"
+import { DownloadVideo } from "./DownloadVideo"
+import { MasterVideo } from "./MasterVideo"
+import { MediaResolved } from "./MediaResolved"
+import { fetchWithRetry } from "./fetchWithRetry"
+import { processVideoMedia } from "./processVideoMedia"
 
 export async function loadVideo(video: DownloadVideo) {
 	const masterUrl = new URL(video.url).toString()
@@ -38,21 +38,15 @@ export async function loadVideo(video: DownloadVideo) {
 		}))
 		: undefined
 
-	for (const videoPart of videoParts) {
-		await processMedia({
-			type: "video",
-			video,
-			media: videoPart
-		})
-	}
+	await processVideoMedia({
+		video,
+		parts: videoParts
+	})
 
 	if (audioParts) {
-		for (const audioPart of audioParts) {
-			await processMedia({
-				type: "audio",
-				video,
-				media: audioPart
-			})
-		}
+		await processVideoMedia({
+			video,
+			parts: audioParts
+		})
 	}
 }
