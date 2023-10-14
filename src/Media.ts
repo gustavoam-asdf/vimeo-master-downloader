@@ -1,9 +1,4 @@
-interface Segment {
-	start: number
-	end: number
-	url: string
-	size: number
-}
+import { Segment } from "./Segment"
 
 export interface Media {
 	id: string

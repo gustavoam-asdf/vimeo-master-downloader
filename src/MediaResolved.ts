@@ -1,5 +1,7 @@
 import { Media } from "./Media";
+import { SegmentResolved } from "./SegmentResolved";
 
 export interface MediaResolved extends Media {
-	url: string
+	absoluteUrl: string
+	segments: SegmentResolved[]
 }

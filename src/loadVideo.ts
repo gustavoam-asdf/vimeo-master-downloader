@@ -1,7 +1,7 @@
-import { DownloadVideo } from "./DownloadVideo";
-import { MasterVideo } from "./MasterVideo";
-import { MediaResolved } from "./MediaResolved";
-import { fetchWithRetry } from "./fetchWithRetry";
+import { DownloadVideo } from "./DownloadVideo"
+import { MasterVideo } from "./MasterVideo"
+import { MediaResolved } from "./MediaResolved"
+import { fetchWithRetry } from "./fetchWithRetry"
 
 export async function loadVideo(video: DownloadVideo) {
 	const masterUrl = new URL(video.url).toString()
@@ -14,16 +14,32 @@ export async function loadVideo(video: DownloadVideo) {
 		? [...master.audio].sort((a, b) => a.avg_bitrate - b.avg_bitrate)
 		: undefined
 
-	const videoParts: MediaResolved[] = videoOrderedParts.map(part => ({
-		...part,
-		url: new URL(part.base_url, masterUrl).toString()
-	}))
+	const videoParts: MediaResolved[] = videoOrderedParts.map(part => {
+		const absoluteUrl = new URL(part.base_url, masterUrl).toString()
+
+		return {
+			...part,
+			absoluteUrl,
+			segments: part.segments.map(segment => ({
+				...segment,
+				absoluteUrl: new URL(segment.url, absoluteUrl).toString()
+			}))
+		}
+	})
 
 	const audioParts: MediaResolved[] | undefined = audioOrderedParts
-		? audioOrderedParts.map(part => ({
-			...part,
-			url: new URL(part.base_url, masterUrl).toString()
-		}))
+		? audioOrderedParts.map(part => {
+			const absoluteUrl = new URL(part.base_url, masterUrl).toString()
+
+			return {
+				...part,
+				absoluteUrl,
+				segments: part.segments.map(segment => ({
+					...segment,
+					absoluteUrl: new URL(segment.url, absoluteUrl).toString()
+				}))
+			}
+		})
 		: undefined
 
 	const videoPart = videoParts[0]

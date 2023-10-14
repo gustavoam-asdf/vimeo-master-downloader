@@ -23,7 +23,12 @@ export async function processMedia({ type, video, media }: Params) {
 		return
 	}
 
-	const fileExists = await fs
-		.stat(filePath)
-		.then(() => true).catch(() => false)
+	const existFile = await fs.exists(filePath)
+
+	if (existFile) {
+		console.log(`→ ✅ ${file} - ${type} already exists`)
+		return
+	}
+
+	await fs.writeFile(downloadingFlag, "")
 }
