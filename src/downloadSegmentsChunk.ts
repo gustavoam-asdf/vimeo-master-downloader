@@ -1,6 +1,7 @@
 import { WriteStream } from "node:fs"
-import https from "node:https"
+import { SegmentResolved } from "./SegmentResolved"
 import { SegmentsChunk } from "./SegmentsChunk"
+import { fetchWithRetry } from "./fetchWithRetry"
 
 export type Params = {
 	type: "audio" | "video"
@@ -25,24 +26,19 @@ export async function downloadSegmentsChunk({
 				const currentIndex = startIndex + index
 				console.log(`→ Downloading ${type} segment (${currentIndex}/${totalSegments}) of ${videoName}`)
 
-				const response = await new Promise((resolve: (data: Buffer) => void, reject) => {
-					let data = Buffer.from([])
-					https.get(segment.absoluteUrl, (res) => {
-						if (res.statusCode !== 200) {
-							reject(new Error(`Downloading segment with url '${segment.absoluteUrl}' failed with status: ${res.statusCode} ${res.statusMessage}`))
-						}
+				const downloadSegment = async (segment: SegmentResolved) => {
+					const response = await fetchWithRetry({
+						url: segment.absoluteUrl
+					});
+					if (!response.ok) {
+						throw new Error(`Downloading segment with url '${segment.absoluteUrl}' failed with status: ${response.status} ${response.statusText}`);
+					}
+					const data = await response.arrayBuffer();
+					const uint8Array = new Uint8Array(data);
+					return uint8Array;
+				}
 
-						res.on("data", d => {
-							data = Buffer.concat([data, d])
-						})
-
-						res.on("end", () => {
-							resolve(data)
-						})
-					}).on("error", (err) => {
-						reject(err)
-					})
-				})
+				const response = await downloadSegment(segment);
 
 				return response
 			}

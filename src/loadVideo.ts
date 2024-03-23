@@ -1,4 +1,3 @@
-import url from "node:url"
 import { DownloadVideo } from "./DownloadVideo"
 import { MasterVideo } from "./MasterVideo"
 import { MediaResolved } from "./MediaResolved"
@@ -20,7 +19,7 @@ export async function loadVideo(downloadVideo: DownloadVideo) {
 	const betterVideo = availableVideos[availableVideos.length - 1]
 	const betterAudio = availableAudios ? availableAudios[availableAudios.length - 1] : undefined
 
-	const mediaUrl = url.resolve(masterUrl, master.base_url)
+	const mediaUrl = new URL(master.base_url, masterUrl).href
 
 	const videoResolved: MediaResolved = {
 		...betterVideo,
